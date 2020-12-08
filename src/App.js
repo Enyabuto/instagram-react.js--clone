@@ -1,30 +1,97 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { db } from './firebase'
 import './App.css';
 import Post from './Post';
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+import {Button, Input} from '@material-ui/core';
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
+
 
 function App() {
-  const [posts, setPosts] = useState ([
-    {
-      username: "elisha_on",
-      caption: "WOW it works",
-      imageUrl: "https://www.freecodecamp.org/news/content/images/2020/02/Ekran-Resmi-2019-11-18-18.08.13.png"
-    },
-    {
-      username: "joabn30",
-      caption: "Damn! Those are beautiful",
-      imageUrl: "https://asset.bloomnation.com/c_pad,d_vendor:global:catalog:product:image.png,f_auto,fl_preserve_transparency,q_auto/v1605352255/vendor/2183/catalog/product/2/0/20200424092013_file_5ea3580d59716_5ea35828e648b.jpg"
-    },
-    {
-      username: "NBAonTNT",
-      caption: "LBJ is on fire",
-      imageUrl: "https://pyxis.nymag.com/v1/imgs/847/0f7/504c63a03d8a751a5cbeda0bc064306bb4-lebron-james.rsquare.w1200.jpg"
-    },
-  ]);
+  const classes = useStyles();
+  const [modalStyle] = useState(getModalStyle);
+  const [posts, setPosts] = useState ([]);
+  const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
-  
+  //Runs a piece of code based on a specific condition
+  useEffect(() => {
+    //everytime a new document is added to firebase DB this code runs 
+    db.collection('posts').onSnapshot(snapshot =>{
+      setPosts(snapshot.docs.map(doc => ({
+        id: doc.id, 
+        post: doc.data()
+      })));
+    })
+  },[]);
+
+  const signUp = (event) => {
+
+  }
 
   return (
     <div className="app">
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+      <div style={modalStyle} className={classes.paper}>
+          <form>
+              <center>
+              <img className="app_headerImage" 
+                src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" 
+                alt=""
+              />
+              </center>
+            
+              <Input
+                placeholder="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <Input
+                placeholder="email"
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Input
+                placeholder="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button onClick={signUp}>Sign Up</Button>
+            </form>
+        </div>
+      </Modal>
+
       <div className="app_header">
         <img className="app_headerImage" 
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" 
@@ -32,13 +99,13 @@ function App() {
         />
       </div>
 
+      <Button onClick={() => setOpen(true)}>Sign UP</Button>
+
       {
-        posts.map(post => (
-            <Post username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
+        posts.map(({id, post}) => (
+            <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
           ))
       };
-      
-      
     </div>
   );
 }
