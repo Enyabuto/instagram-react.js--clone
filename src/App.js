@@ -5,6 +5,7 @@ import Post from './Post';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import {Button, Input} from '@material-ui/core';
+import ImageUpload from './ImageUpload';
 
 function getModalStyle() {
   const top = 50;
@@ -63,7 +64,7 @@ useEffect(() => {
   //Runs a piece of code based on a specific condition
   useEffect(() => {
     //everytime a new document is added to firebase DB this code runs 
-    db.collection('posts').onSnapshot(snapshot =>{
+    db.collection('posts').orderBy('timestamp', 'desc' ).onSnapshot(snapshot =>{
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id, 
         post: doc.data()
@@ -98,6 +99,7 @@ useEffect(() => {
 
   return (
     <div className="app">
+
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -165,12 +167,10 @@ useEffect(() => {
 
 
       <div className="app__header">
-        <img className="app_headerImage" 
+        <img className="app__headerImage" 
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" 
           alt=""
         />
-      </div>
-
       {user ? (
         <Button onClick={() => auth.signOut()}>Logout</Button>
       ):(
@@ -180,12 +180,22 @@ useEffect(() => {
         </div>
       )}
 
+      </div>
+
+      
 
       {
         posts.map(({id, post}) => (
             <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
           ))
-      };
+      }
+
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName} />
+      ): (
+        <h3>Sorry you need to login to upload</h3>
+      )}
+
     </div>
   );
 }
