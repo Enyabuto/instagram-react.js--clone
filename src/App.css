@@ -5,7 +5,20 @@
   background-color: #fafafa;
 }
 
+.app__postsRight {
+  margin-left: 10px;
+}
+
+.app__posts {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
 .app__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background-color: white;
   padding: 20px;
   border-bottom: 1px solid lightgray;
@@ -20,4 +33,38 @@
 .app__signup {
   display: flex;
   flex-direction: column;
+}
+.app__searchbar {
+  position: relative;
+}
+.app__search {
+  background: #fafafa;
+  border: 1px solid #d2dbd2;
+  padding: 7px 45px;
+  border-radius: 3px;
+  outline: none;
+  font-size: 14px;
+  font-weight: 400;
+}
+.app__searchicon {
+  position: absolute;
+  top: 10px;
+  left: 30px;
+  color: silver;
+}
+
+.app__last{
+  width: 33.33333333333333%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.app__icon{
+  display: inline-block;
+  margin: 0 10px;
+  font-size: 25px;
+  cursor: pointer;
+}
+li {
+  list-style: none;
 }

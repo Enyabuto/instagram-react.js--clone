@@ -5,6 +5,8 @@ import Post from './Post';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import {Button, Input} from '@material-ui/core';
+import { FaSistrix, FaTelegramPlane, FaRegCompass, FaRegHeart } from 'react-icons/fa';
+import { MdHome } from 'react-icons/md';
 import ImageUpload from './ImageUpload';
 
 function getModalStyle() {
@@ -171,25 +173,49 @@ useEffect(() => {
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" 
           alt=""
         />
-      {user ? (
-        <Button onClick={() => auth.signOut()}>Logout</Button>
-      ):(
-        <div className="app__loginContainer">
-          <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
-          <Button onClick={() => setOpen(true)}>Sign UP</Button>
+      <div className="app__searchbar">
+        <input type="text" className="app__search" placeholder="Search"/>
+        <FaSistrix className="app__searchicon"/>
+      </div>
+        <div className="app__last">
+          <l1>
+            <MdHome className="app__icon"/>
+          </l1>
+          <li>
+            <FaTelegramPlane className="app__icon"/>
+          </li>
+          <li>
+            <FaRegCompass className="app__icon"/>
+          </li>
+          <li>
+            <FaRegHeart className="app__icon"/>
+          </li>
+          <li>
+          {user ? (
+          <Button onClick={() => auth.signOut()}>Logout</Button>
+        ):(
+          <div className="app__loginContainer">
+            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+            <Button onClick={() => setOpen(true)}>Sign UP</Button>
+          </div>
+        )}
+          </li>
         </div>
-      )}
-
       </div>
 
+      <div className="app__posts">
+        <div className="app__postsLeft">
+          {
+            posts.map(({id, post}) => (
+                <Post key={id} postId={id} user={user} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
+              ))
+          }
+        </div>
+        <div className="app__postsRight">
+        
+      </div>
+    </div>
       
-
-      {
-        posts.map(({id, post}) => (
-            <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
-          ))
-      }
-
       {user?.displayName ? (
         <ImageUpload username={user.displayName} />
       ): (
